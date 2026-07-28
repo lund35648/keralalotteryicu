@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel - WhatsApp Control</title>
+<style>
+  body { 
+    font-family: Arial, sans-serif; 
+    background: linear-gradient(135deg,#fff0f5,#ffe6f0); 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh; 
+    margin: 0; 
+  }
+  .card { 
+    background: #fff; 
+    padding: 24px; 
+    border-radius: 16px; 
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
+    width: 90%; 
+    max-width: 360px; 
+    text-align: center; 
+    box-sizing: border-box;
+  }
+  h2 { color: #d9365d; margin-top: 0; font-size: 20px; }
+  
+  .status-box {
+    background: #e8f5e9;
+    border: 1px solid #a5d6a7;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 15px;
+  }
+  .status-title { font-size: 11px; color: #2e7d32; font-weight: bold; text-transform: uppercase; }
+  .current-num { font-size: 18px; color: #1b5e20; font-weight: bold; margin-top: 2px; }
+
+  input { 
+    width: 100%; 
+    padding: 11px; 
+    margin-bottom: 8px; 
+    border: 1px solid #ddd; 
+    border-radius: 8px; 
+    box-sizing: border-box; 
+    font-size: 14px; 
+    outline: none;
+  }
+  input:focus { border-color: #ff4f79; }
+
+  .guide-text {
+    font-size: 11px;
+    color: #c2185b;
+    background: #ffd6e0;
+    padding: 8px;
+    border-radius: 6px;
+    text-align: left;
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+
+  button { 
+    width: 100%; 
+    padding: 12px; 
+    background: linear-gradient(90deg, #ff4f79, #d9365d); 
+    color: white; 
+    border: none; 
+    border-radius: 8px; 
+    font-weight: bold; 
+    cursor: pointer; 
+    font-size: 14px; 
+  }
+
+  .msg { margin-top: 10px; font-weight: bold; font-size: 12px; }
+  #adminContent { display: none; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <!-- Password Protection Box -->
+  <div id="loginBox">
+    <h2>🔐 Admin Login</h2>
+    <p style="font-size:12px; color:#666; margin-bottom:15px;">एडमिन पैनल खोलने के लिए पासवर्ड दर्ज करें</p>
+    <input type="password" id="passInput" placeholder="Enter Password">
+    <button onclick="checkPassword()">Login Panel</button>
+    <div id="loginMsg" class="msg" style="color:red;"></div>
+  </div>
+
+  <!-- Main Admin Settings -->
+  <div id="adminContent">
+    <h2>⚙️ WhatsApp Settings</h2>
+
+    <div class="status-box">
+      <div class="status-title">🟢 Active WhatsApp Number</div>
+      <div class="current-num" id="currentNumDisplay">+91 Loading...</div>
+    </div>
+
+    <input type="tel" id="newNumberInput" placeholder="New WhatsApp Number" maxlength="12">
+    
+    <div class="guide-text">
+      📌 <b>नंबर डालने का सही तरीका:</b><br>
+      • नंबर के आगे <b>91</b> लगाकर डालें (उदा: <code>917619042092</code>)<br>
+      • अगर आप केवल 10 अंकों का नंबर डालेंगे, तो आगे <b>91</b> अपने आप जुड़ जाएगा।
+    </div>
+
+    <button onclick="updateNumber()">Save & Update Number</button>
+    <div id="saveMsg" class="msg"></div>
+  </div>
+</div>
+
+<script>
+const DEFAULT_NUMBER = "917619042092";
+
+function checkPassword(){
+  const pass = document.getElementById("passInput").value;
+  if(pass === "112233"){
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("adminContent").style.display = "block";
+    loadCurrentNumber();
+  } else {
+    document.getElementById("loginMsg").textContent = "❌ गलत पासवर्ड! फिर से प्रयास करें।";
+  }
+}
+
+function loadCurrentNumber(){
+  let num = localStorage.getItem("whatsapp_number") || DEFAULT_NUMBER;
+  document.getElementById("currentNumDisplay").textContent = "+" + num;
+}
+
+function updateNumber(){
+  let rawNum = document.getElementById("newNumberInput").value.trim().replace(/[^0-9]/g, '');
+  let saveMsg = document.getElementById("saveMsg");
+
+  if (rawNum.length === 10) {
+    rawNum = "91" + rawNum;
+  }
+
+  if (rawNum.length === 12 && rawNum.startsWith("91")) {
+    localStorage.setItem("whatsapp_number", rawNum);
+    loadCurrentNumber();
+    
+    saveMsg.style.color = "green";
+    saveMsg.innerHTML = "✅ WhatsApp नंबर अपडेट हो गया!<br>(" + rawNum + ")";
+    document.getElementById("newNumberInput").value = "";
+  } else {
+    saveMsg.style.color = "red";
+    saveMsg.textContent = "⚠️ कृपया सही 10 अंक या 91 लगाकर 12 अंक दर्ज करें!";
+  }
+}
+</script>
+
+</body>
+</html>
+
