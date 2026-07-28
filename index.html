@@ -52,6 +52,7 @@ margin-bottom:8px;
 border-radius:8px;
 border:1px solid #ddd;
 font-size:13px;
+box-sizing:border-box;
 }
 
 .ticketBox{
@@ -288,9 +289,12 @@ Total Amount ₹${total}
 
 Please confirm booking`;
 
+// Admin se connected WhatsApp number (Default: 917619042092)
+let activeWhatsAppNumber = localStorage.getItem("whatsapp_number") || "917619042092";
+
 setTimeout(()=>{
 
-window.open("https://wa.me/+917619042092?text="+encodeURIComponent(msg),"_blank");
+window.open("https://wa.me/" + activeWhatsAppNumber + "?text=" + encodeURIComponent(msg), "_blank");
 
 },200);
 
